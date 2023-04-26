@@ -1,3 +1,4 @@
+Chapter 1:
 6 main reasons that people choose to use python:
 - software quality
 - developer productivity
@@ -31,3 +32,27 @@ and more
 extensions
 - Data mining with the Orange framework, the Pattern bundle, Scrapy, and custom
 code
+4 way to run script file:
+- command line
+- import module
+- exec file
+- file icon click
+why might you need  to reload a module:
+- because python imports a module only once per process
+What is a namespace, and how does it relate to module files?
+- A namespace is just a package of variables (i.e., names). It takes the form of an
+object with attributes in Python. Each module file is automatically a namespace—
+that is, a package of variables reflecting the assignments made at the top level of
+the file. Namespaces help avoid name collisions in Python programs: because each
+module file is a self-contained namespace, files must explicitly import other files
+in order to use their names
+part 2:
+built core data types:
+Number,Strings,Lists,Dictionaries,tuples,Files,Sets,Booleans,tupes,Nones,Program unit types(functions,modules,classes),implementation-related types(compiled code,stack tracebacks)
+Numeric types include:
+- integer and floating-point object
+- complex number object
+- decimal
+- fraction
+- sets
+- booleans
