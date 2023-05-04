@@ -3,6 +3,9 @@
 import sys
 import decimal
 import fractions
+from collections import namedtuple
+import pickle
+import json
 name = 'hanh'
 print(name)
 print(2**32)
@@ -199,19 +202,147 @@ print(D)
 def Key(a):
     print
 
+
 items = list(D.items())
 items.sort()
 print(items)
-D=dict(items)
+D = dict(items)
 print(D)
-#tuple
-T=('hello')
-print(T) #=> 
-l=['name', 'jobs']
-T=('name', 'jobs')
-l1=l[0:]
+# tuple
+T = ('hello')
+print(T)  # =>
+l = ['name', 'jobs']
+T = ('name', 'jobs')
+l1 = l[0:]
 print(l1 is l)
-t1=T[0:]
+t1 = T[0:]
 print(t1 is T)
-t=40,
+t = 40,
 print(t)
+REC = namedtuple('rec', ['name', 'age', 'jobs'])
+hanh = REC(age=22, name='hanh', jobs=['coder', 'intern'])
+print(hanh)
+print(hanh[0])
+print(hanh.name)
+ordict = hanh._asdict()
+print(type(ordict))
+name, age, jobs = hanh
+print(f'{name} {age} {jobs}')
+for x in ordict:
+    print(ordict[x])
+rubyFile = open(r'ruby.rb', 'a+')
+rubyFile.seek(0)
+print(repr(rubyFile.read()))
+# rubyFile.write('puts("hế hế hế hế lô")\n')
+# rubyFile.seek(0)
+# print(repr(rubyFile.readline()))
+rubyFile.close()
+rubyFile = open(r'ruby.rb', 'rb')
+data = rubyFile.read()
+print(data[0:4])
+print(data[0])
+print(data.decode('utf-8'))
+X, Y, Z = 43, 44, 45
+s = 'Spam'
+D = {'name': 'Hanh', 'age': 22}
+L = [1, 2, 3]
+f = open('datafile.txt', 'w')
+f.write(s + '\n')
+f.write(f'{X},{Y},{Z}\n')
+f.write(str(L)+'&'+str(D)+'\n')
+f.close
+f = open('datafile.txt', 'r')
+datalists = f.readlines()
+s = datalists[0].strip()
+print(s)
+X, Y, Z = tuple([int(p) for p in (datalists[1].lstrip().split(','))])
+print(repr(X))
+D = {'a': 1, 'b': 2}
+f = open('datafile.pkl', 'wb')
+pickle.dump(D, f)
+f.close
+f = open('datafile.pkl', 'rb')
+E = pickle.load(f)
+print(E)
+print(hanh)
+json_obj = json.dumps(hanh._asdict(), indent=4)
+with open('person.json', 'w') as outfile:
+    outfile.write(json_obj)
+print(open('person.json').read())
+with open('person.json', 'r') as infile:
+    json_object = json.load(infile)
+print(json_object)
+x = 'spam'
+a, *b = x
+print(b)
+x = spam, ham = ['yum', 'YUM']
+print(x)
+s = 'hello helooo abcsdwe'
+S = 'hello helooo abcsdwe'
+print(s is S)
+x = 1 + 2 + 3 \
+    + 4
+print(x)
+print(2 or 3)  # => 2
+print(3 or 2)  # => 3
+print([] or 3)  # => 3
+print([] or {})  # => {}
+print(2 and 3)  # => 2
+print(3 and 2)  # => 2
+print([] and 3)  # => []
+print([] and {})  # => []
+if (hanh.age > 20):
+    print('hanh da gia')
+else:
+    print('hanh con tre')
+print('hanh da gia') if hanh.age > 20 else print('hanh con tre')
+s = 'spam'
+while s:
+    if (s[0] == 'm'):
+        break
+    if (s[0] != 'p'):
+        print(s[0])
+    s = s[1:]
+else:
+    print('da in xong')
+T = [(1, 2), (3, 4), (5, 6)]
+for (a, b) in T:
+    print(a, b)
+for x in T:
+    print(x[0], x[1])
+D = {1: 2, 2: 3, 3: 4}
+for key in D:
+    print(key, D[key], sep='=>')
+lot = [(1, 2, 3), (4, 5, 6)]
+for both in lot:
+    a, b, c = both
+    print(a, b, c)
+for line in open('ruby.rb'):  # Use iterators: best for text input
+    print(line.rstrip())
+print(tuple(range(5, -5, -2)))
+print(tuple(range(5, 10)))
+print(tuple(range(5)))
+s = 'Nguyen The Hanh'
+for c in s[::2]:
+    print(c)
+for i in range(0, len(s), 2):
+    print(s[i])
+l = [1, 2, 3, 4, 5]
+for i in range(len(l)):
+    l[i] += 1
+print(l)
+# albeit without changing the original list in place
+# (we could assign the expression’s new list object result back to L, but this would not update any other references to the original list)
+[x+1 for x in l]
+print(l)
+l = [1, 2, 3, 4, 5]
+zipped = zip(l, range(5))
+print(tuple(zipped))
+zipped = zip(l, range(5))
+print(dict(zipped))
+print(type(range(5)))
+print(list(map(lambda x: x+1, l)))
+for (offset, item) in enumerate(l):
+    print(item, 'appears at offset', offset)
+for (i, l) in enumerate(open('ruby.rb')):
+    print('%s) %s' %(i,l.strip()))
