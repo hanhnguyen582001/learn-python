@@ -1,5 +1,6 @@
 #! /usr/bin/python3.11
 # this is a single comment
+import first
 import sys
 import decimal
 import fractions
@@ -345,4 +346,340 @@ print(list(map(lambda x: x+1, l)))
 for (offset, item) in enumerate(l):
     print(item, 'appears at offset', offset)
 for (i, l) in enumerate(open('ruby.rb')):
-    print('%s) %s' %(i,l.strip()))
+    print('%s) %s' % (i, l.strip()))
+
+# function
+
+
+def f1():
+    X = 88  # Enclosing def local
+
+    def f2():
+        print(X)  # Reference made in nested def
+    f2()
+
+
+f1()
+
+# functions retain state
+
+
+def f1(X):
+    def f2():
+        print(X)  # Remembers X in enclosing def scope
+    return f2  # Return f2 but don't call it
+
+
+action = f1(10)  # Make, return function
+action2 = f1(11)
+action()
+action2()
+
+# lambda functions retain state too
+
+
+def f1(X):
+    return lambda: print(X)
+
+
+action = f1(10)  # Make, return function
+action2 = f1(11)
+action()
+action2()
+
+# nolocal variable
+
+
+def tester(start):
+    def nested(label):
+        nonlocal start
+        print(label, start)
+        start += 1
+    return nested
+
+
+F = tester(0)
+F('spam')
+F('spam')
+
+
+def tester(start):
+    def nested(label):
+        print(label, nested.state)  # nested is in enclosing scope
+        nested.state += 1  # Change attr, not nested itself
+
+    nested.state = start  # Initial state after func defined
+    return nested
+
+
+F = tester(0)
+F('spam')
+F('spam')
+
+
+def tester(start):
+    global state  # Move it out to the module to change it
+    state = start  # global allows changes in module scope
+
+    def nested(label):
+        global state
+        print(label, state)
+        state += 1
+    return nested
+
+
+F = tester(0)
+F('spam')
+F('spam')
+
+
+class tester:  # Class-based alternative (see Part VI)
+    def __init__(self, start):  # On object construction,
+        self.state = start  # save state explicitly in new object
+
+    def nested(self, label):
+        print(label, self.state)  # Reference state explicitly
+        self.state += 1
+
+
+F = tester(0)
+F.nested('spam')
+F.nested('spam')
+
+
+def func():
+    X = 'NI'
+
+    def nested():
+        nonlocal X
+        X = 'Spam'
+    nested()
+    print(X)
+
+
+func()
+
+
+def changer(a, b, c):  # Arguments assigned references to objects
+    a = 2  # Changes local name's value only
+    b[0] = c
+
+
+x = 1
+y = [1, 2, 3]
+changer(x, y, 'spam')
+print(x, y)  # => 1 ['spam', 2, 3]
+changer(x, y[:], 'hello')
+print(x, y)  # => 1 ['spam', 2, 3]; y does not change
+
+# multi output parameter
+x = 1
+y = [1, 2, 3]
+
+
+def swap(x, y):
+    x, y = y, x
+    return x, y
+
+
+x, y = swap(x, y)
+print(x, y)  # => [1, 2, 3] 1
+
+# Keyword and Default
+
+
+def f(a, b, c): print(a, b, c)
+
+
+f(c=3, b=2, a=1)  # => 1 2 3
+
+
+def f(a, b=2, c=3): print(a, b, c)
+
+
+f(a=1)  # => 1 2 3
+
+# Arbitrary Arguments
+
+
+def sum(*args):
+    print(type(args))
+    result = 0
+    for x in args:
+        result += x
+    return result
+
+
+sum(1, 2, 3)
+
+
+def f(**kargs):
+    print(kargs)
+
+
+f(a=1, b=2)
+D = {'a': 1, 'b': 2, 'c': 3}
+f(**D)
+# combination
+
+
+def f(a, *pargs, **kargs): print(a, pargs, kargs)
+
+
+f(1, 2, 3, x=1, y=2)  # => 1 (2, 3) {'y': 2, 'x': 1}
+
+# Unpacking arguments
+a = (1, 2, 3, 4)
+print(sum(*a))
+
+
+def sum_value_dict(**kwargs):
+    result = 0
+    for key, value in kwargs.items():
+        result += value
+    return result
+
+
+D = {'a': 1, 'b': 2, 'c': 3, 'd': 4}
+print(sum_value_dict(**D))
+
+
+def combination_sum(*args, **kwargs):
+    result = 0
+    for value in args:
+        result += value
+    for key, value in kwargs.items():
+        result += value
+    return result
+
+
+print(combination_sum(1, 2, 3, a=1, b=2, c=3))
+
+
+def kwonly(a, *d, b, c):
+    print(a, b, c, d)
+
+
+kwonly(1, 2, 3, 4, b=5, c=6)  # => 1 5 6 (2, 3, 4)
+
+
+def kwonly(a, *, b, c, **args):
+    print(a, b, c)
+
+
+# kwonly(1, 2, 3, 4, b=5, c=6) #=> error
+# kwonly(1, 5, c=6)  # => error
+kwonly(1, b=5, c=6)  # => 1 5 6
+kwonly(1, **dict(b=2, c=3))  # Keyword-only in **
+
+
+def sum(positive=True, *args):
+    result = 0
+    for x in args:
+        result += x
+    return result if positive == True else -result
+
+
+print(sum(*[1, 2, 3, 4]))  # => 9 because positive=1 and args=[2,3,4]
+
+
+def sum(*args, positive=True):
+    result = 0
+    for x in args:
+        result += x
+    return result if positive == True else -result
+
+
+print(sum(*[1, 2, 3, 4]))  # => 10
+print(sum(*[1, 2, 3, 4], positive=False))  # => -10
+
+
+def lessthan(x, y): return x < y
+def grtrthan(x, y): return x > y
+
+
+def minmax(*args, key=lessthan):
+    res = args[0]
+    for arg in args:
+        if key(arg, res):
+            res = arg
+    return res
+
+
+print(minmax(*[1, 2, 3, 4, 5, 6, 7]))  # => 1
+print(minmax(*[1, 2, 3, 4, 5, 6, 7], key=grtrthan))  # => 7
+print(minmax(*[1, 2, 3, 4, 5, 6, 7], key=lambda x, y: x < y))  # => 1
+
+
+def intersect(*args):
+    res = []
+    for x in args[0]:  # Scan first sequence
+        if x in res:
+            continue  # Skip duplicates
+        for other in args[1:]:  # For all other args
+            if x not in other:
+                break  # Item in each one?
+        else:  # No: break out of loop
+            res.append(x)  # Yes: add items to end
+    return res
+
+
+def union(*args):
+    res = []
+    for seq in args:  # For all args
+        for x in seq:  # For all nodes
+            if not x in res:
+                res.append(x)  # Add new items to result
+    return res
+
+
+s1, s2, s3 = "SPAM", "SCAML", 'SPAL'
+print(intersect(s1, s2, s3))
+
+# Emulating the Python 3.X print Function
+
+
+def print1(*args, sep=' ', end='\n', file=sys.stdout):
+    output = ''
+    first = True
+    for arg in args:
+        output += ('' if first else sep) + str(arg)
+        first = False
+    file.write(output + end)
+
+
+print1(s1, s2, s3, sep='...')
+
+# Recursion
+
+
+def sumtree(L):
+    tot = 0
+    for x in L:  # For each item at this level
+        if not isinstance(x, list):
+            tot += x  # Add numbers directly
+        else:
+            tot += sumtree(x)  # Recur for sublists
+    return tot
+
+
+L = [1, [2, [3, 4], 5], 6, [7, 8]]  # Arbitrary nesting
+print(sumtree(L))
+
+# lamda
+
+
+def knights():
+    title = 'Sir'
+    action = (lambda x: title + ' ' + x)  # Title in enclosing def scope
+    return action
+
+
+act = knights()
+msg = act('robin')
+print(msg)
+L = [lambda x: x ** 2,  # Inline function definition
+     lambda x: x ** 3,
+     lambda x: x ** 4]
+for f in L:
+    print(f(2))
