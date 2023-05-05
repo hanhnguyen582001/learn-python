@@ -1,5 +1,6 @@
 #! /usr/bin/python3.11
 # this is a single comment
+import dir1.main
 import first
 import sys
 import decimal
@@ -683,3 +684,154 @@ L = [lambda x: x ** 2,  # Inline function definition
      lambda x: x ** 4]
 for f in L:
     print(f(2))
+
+# List Comprehensions
+L = [ord(x) for x in 'spam']
+L1 = list(map(ord, 'spam'))
+print(L == L1)
+# => [100, 200, 300, 101, 201, 301, 102, 202, 302]
+res = [x + y for x in [0, 1, 2] for y in [100, 200, 300]]
+# access the column in matrix
+matrix = [[1, 2, 3],
+          [2, 3, 4],
+          [4, 5, 6]]
+column = [row[0] for row in matrix]
+print(column)  # => 1,2,4
+# access the Diagonals
+diagonals = [matrix[i][i] for i in range(len(matrix))]
+print(diagonals)  # 1,3,6
+
+# generator
+
+
+def gensquares(N):
+    for i in range(N):
+        yield i ** 2
+
+
+print(type(gensquares(5)))  # => class generator
+for res in gensquares(5):
+    print(res, sep=',', end='')
+# => 0,1,4,9,16
+
+
+def gensquares1(N):
+    for i in range(N):
+        return i ** 2
+
+
+print(type(gensquares1(5)))  # => class int
+print(gensquares1(5))  # => 0
+# generator is a iterator
+gensq = gensquares(5)
+print(next(gensq))  # => 0
+print(next(gensq))  # => 1
+print(iter(gensq) == gensq)  # => true
+print(tuple(gensquares(5)))  # => 0,1,4,9,16
+
+# generator expression
+a = (x * x for x in range(5))
+print(type(a))  # => class generator
+list(print(x, end=' ') for x in 'spam')
+
+
+def scramble(seq):
+    return (seq[i:] + seq[:i] for i in range(len(seq)))
+
+
+print(list(scramble([1, 2, 3, 1])))
+print(dir1.main)
+print(dir1.x)
+
+
+class person:
+    def __init__(self, first_name, last_name, age, job):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.age = age
+        self.job = job
+
+    def full_name(self):
+        return f'{self.first_name} {self.last_name}'
+
+    def __repr__(self):
+        return f"[person: {self.first_name}, {self.last_name}, {self.age}, {self.job}]"
+
+    def __str__(self):
+        return f'hello my name is {self.last_name}, I\'m {self.age}, I\'m {self.job}'
+
+    def speak(self):
+        pass
+
+
+per1 = person('Nguyen The', 'Hanh', 22, 'developer')
+print(per1)
+print(repr(per1))
+print(per1.full_name())
+
+
+class VietNamPerson(person):
+    def speak(self):
+        print('i speak vietnamese')
+
+
+class JapanesePerson(person):
+    def speak(self):
+        print('i speak japanese')
+
+
+class Department:
+    def __init__(self, *args):
+        self.members = list(args)
+
+    def addMember(self, person):
+        self.members.append(person)
+
+    def showAll(self):
+        for person in self.members:
+            print(person)
+
+
+per1 = VietNamPerson('Nguyen The', 'Hanh', 22, 'developer')
+per2 = JapanesePerson('Uzumaki', 'Naruto', 22, 'ninja')
+per1.speak()
+per2.speak()
+
+depart= Department(per1,per2)
+depart.showAll()
+per1.first_name='Hanh'
+print(depart.members[0])
+
+class Mapping:
+    def __init__(self, iterable):
+        self.items_list = []
+        self.__update(iterable)
+
+    def update(self, iterable):
+        for item in iterable:
+            self.items_list.append(item)
+
+    def __str__(self):
+        return str(self.items_list)
+    __update = update   # private copy of original update() method
+
+
+class MappingSubclass(Mapping):
+
+    def update(self, keys, values):
+        # provides new signature for update()
+        # but does not break __init__()
+        for item in zip(keys, values):
+            self.items_list.append(item)
+    __update = update   # private copy of original update() method
+
+
+a = Mapping((1, 2, 3, 4, 5))
+a.update((1, 2))
+print(a)  # => [1, 2, 3, 4, 5, 1, 2]
+a = MappingSubclass((1, 2, 3, 4, 5))
+a.update(['a', 'b'], [1, 2])
+print(a)  # => [1, 2, 3, 4, 5, ('a', 1), ('b', 2)]
+print(type(MappingSubclass._Mapping__update))
+a._Mapping__update((1, 2))
+print(a)  # => [1, 2, 3, 4, 5, ('a', 1), ('b', 2), 1, 2]

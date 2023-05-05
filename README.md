@@ -189,3 +189,12 @@ T.index('Ni')
 T.count('Ni')
 Methods in 2.6, 2.7, and 3.X: search, count
 namedtuple('Emp', ['name', 'jobs']) Named tuple extension type
+part 5:
+Why Use Modules?:
+- Code reuse
+- System namespace partitioning
+- Implementing shared services or data
+How Imports Work?:
+- Find the module’s file.
+- Compile it to byte code (if needed).
+- Run the module’s code to build the objects it defines
